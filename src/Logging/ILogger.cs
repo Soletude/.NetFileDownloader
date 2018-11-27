@@ -6,7 +6,7 @@
 
 namespace FileDownloader.Logging
 {
-    internal interface ILogger
+    public interface ILogger
     {
         /// <summary>
         /// Gets the name of the logger.

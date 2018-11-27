@@ -14,7 +14,7 @@ namespace FileDownloader
     public class DownloadFileCompletedArgs : EventArgs
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="DownloadFileCompletedArgs"/> class
+        /// Initializes a new instance of the <see cref="DownloadFileCompletedArgs" /> class
         /// </summary>
         /// <param name="state">State of download</param>
         /// <param name="fileName">Local path to downloaded file</param>
@@ -23,7 +23,8 @@ namespace FileDownloader
         /// <param name="bytesTotal">File size</param>
         /// <param name="bytesReceived">Received bytes</param>
         /// <param name="error">Exception object</param>
-        public DownloadFileCompletedArgs(CompletedState state, string fileName, Uri fileSource, TimeSpan downloadTime, long bytesTotal, long bytesReceived, Exception error)
+        /// <param name="isValid">if set to <c>true</c> is the file validated</param>
+        public DownloadFileCompletedArgs(CompletedState state, string fileName, Uri fileSource, TimeSpan downloadTime, long bytesTotal, long bytesReceived, Exception error, bool isValid)
         {
             State = state;
             FileName = fileName;
@@ -32,6 +33,7 @@ namespace FileDownloader
             DownloadTime = downloadTime;
             BytesTotal = bytesTotal;
             BytesReceived = bytesReceived;
+            IsValid = isValid;
         }
 
         /// <summary>
@@ -68,6 +70,14 @@ namespace FileDownloader
         /// Gets the number of total bytes which should be received
         /// </summary>
         public long BytesTotal { get; private set; }
+
+        /// <summary>
+        /// Returns true if file is valid.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if file is valid; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsValid { get; private set; }
 
         /// <summary>
         /// Gets the download progress in percent, from 0 to 100

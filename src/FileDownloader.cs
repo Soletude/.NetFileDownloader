@@ -465,7 +465,7 @@ namespace FileDownloader
             DownloadProgressChanged.SafeInvoke(sender, args);
         }
 
-        private void InvokeDownloadCompleted(CompletedState downloadCompletedState, string fileName, Exception error = null, bool fromCache = false)
+        private void InvokeDownloadCompleted(CompletedState downloadCompletedState, string fileName, Exception error = null, bool fromCache = false, bool isValid = true)
         {
             var downloadTime = fromCache ? TimeSpan.Zero : DateTime.Now.Subtract(DownloadStartTime);
             if (this.worker != null)
@@ -473,7 +473,7 @@ namespace FileDownloader
                 BytesReceived = this.worker.Position;
             }
 
-            DownloadFileCompleted.SafeInvoke(this, new DownloadFileCompletedArgs(downloadCompletedState, fileName, this.fileSource, downloadTime, TotalBytesToReceive, BytesReceived, error));
+            DownloadFileCompleted.SafeInvoke(this, new DownloadFileCompletedArgs(downloadCompletedState, fileName, this.fileSource, downloadTime, TotalBytesToReceive, BytesReceived, error, isValid));
         }
 
         private void OnOpenReadCompleted(object sender, OpenReadCompletedEventArgs args)
@@ -652,17 +652,18 @@ namespace FileDownloader
                     this.localFileName = ApplyNewFileName(this.localFileName, webClient.GetOriginalFileNameFromDownload());
                 }
 
-                this.logger.Debug("Download completed. Source: {0} Destination: {1}", this.fileSource, this.localFileName);
-                if (UseCaching)
-                {
-                    this.downloadCache.Add(this.fileSource, this.localFileName, webClient.ResponseHeaders);
-                }
-
                 ////we may have the destination file not immediately closed after downloading
                 WaitFileClosed(this.localFileName, TimeSpan.FromSeconds(3));
 
-                InvokeDownloadCompleted(CompletedState.Succeeded, this.localFileName, null);
+                this.logger.Debug("Download completed. Source: {0} Destination: {1}", this.fileSource, this.localFileName);
+                var isValid = true;
+                if (UseCaching)
+                {
+                    isValid = this.downloadCache.Validate(this.fileSource, this.localFileName, webClient.ResponseHeaders);
+                }
+
                 this.readyToDownload.Set();
+                InvokeDownloadCompleted(CompletedState.Succeeded, this.localFileName, isValid:isValid);
             }
         }
 

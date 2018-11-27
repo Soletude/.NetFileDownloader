@@ -29,6 +29,14 @@ namespace FileDownloader
         void Add(Uri uri, string path, WebHeaderCollection headers);
 
         /// <summary>
+        /// Validate cache record
+        /// </summary>
+        /// <param name="uri">Source URI</param>
+        /// <param name="path">Downloaded file path</param>
+        /// <param name="headers">HTTP headers of the response</param>
+        bool Validate(Uri uri, string path, WebHeaderCollection headers);
+
+        /// <summary>
         /// Get the file from cache. Return file name if file is found in cache, null otherwise 
         /// </summary>
         /// <param name="uri">Source uri</param>

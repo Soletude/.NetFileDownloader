@@ -9,7 +9,7 @@ using System.Diagnostics;
 
 namespace FileDownloader.Logging
 {
-    internal class LoggerFacade : ILogger, IDisposable
+    public class LoggerFacade : ILogger, IDisposable
     {
         private readonly TraceSource traceSource;
 
@@ -22,13 +22,21 @@ namespace FileDownloader.Logging
         public string Name { get; set; }
 
         /// <summary>
+        /// Gets or sets the external logger.
+        /// </summary>
+        /// <value>
+        /// The external logger.
+        /// </value>
+        public static Func<string, ILogger> ExternalLogger { get; set; }
+
+        /// <summary>
         /// Get a logger with a specified name.
         /// </summary>
         /// <param name="loggerName">The name of the logger.</param>
         /// <returns>Instance of logger.</returns>
         public static ILogger GetLogger(string loggerName)
         {
-            return new LoggerFacade(loggerName);
+            return ExternalLogger == null ? new LoggerFacade(loggerName) : ExternalLogger(loggerName);
         }
 
         /// <summary>

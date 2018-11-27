@@ -10,7 +10,7 @@ using FileDownloader.Logging;
 
 namespace FileDownloader
 {
-    internal static class FileHelpers
+    public static class FileHelpers
     {
         private static readonly ILogger Logger = LoggerFacade.GetCurrentClassLogger();
 
